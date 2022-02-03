@@ -1,4 +1,4 @@
-## outline
+# outline
 
 1. What_is_Dynamic_Programming\*,
 2. Knapsack,
@@ -7,9 +7,11 @@
 5. Minimum_Subset_Sum_Difference,
 6. Count_of_Subset_Sum,
 7. Target_Sum,
-8. Unbounded_Knapsack,
+## 8. Unbounded_Knapsack,
 
-- top-down bruteforce
+- 🍏 top-down bruteforce
+- 🔴 top-down with cache
+- 🔴 bottom-up
 
 9. Rod_Cutting
 10. Coin_Change,
