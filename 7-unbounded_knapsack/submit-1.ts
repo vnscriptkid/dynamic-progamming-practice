@@ -1,7 +1,7 @@
 function topDown(
-  profits,
-  weights,
-  capacity,
+  profits: number[],
+  weights: number[],
+  capacity: number,
   curIdx = 0,
   curProfit = 0,
   max = { current: 0 }
@@ -31,10 +31,14 @@ function topDown(
   return max.current;
 }
 
-function topDownMemoized(profits, weights, capacity) {
-  const cache = {};
+function topDownMemoized(
+  profits: number[],
+  weights: number[],
+  capacity: number
+) {
+  const cache: Record<string, any> = {};
 
-  function recursiveFn(capacity, curIdx, curProfit) {
+  function recursiveFn(capacity: number, curIdx: number, curProfit: number) {
     const [cap, idx] = Array.from(arguments);
 
     if (String([cap, idx]) in cache) return cache[String([cap, idx])];
@@ -71,4 +75,45 @@ function topDownMemoized(profits, weights, capacity) {
   return recursiveFn(capacity, 0, 0);
 }
 
-export { topDown, topDownMemoized };
+function bottomUp(profits: number[], weights: number[], capacity: number) {
+  // generate matrix
+  const rows = profits.length + 1;
+  const cols = capacity + 1;
+
+  const dp = Array(rows)
+    .fill(null)
+    .map(() => Array(cols).fill(0));
+
+  // initial matrix state
+
+  // solve matrix
+  for (let rowIdx = 1; rowIdx < rows; rowIdx++) {
+    for (let colIdx = 1; colIdx < cols; colIdx++) {
+      // in one cell, find local max profit considering items up until cur row, with capacity colIdx
+      const [profit, weight] = [profits[rowIdx - 1], weights[rowIdx - 1]];
+
+      // choice 1: take curItem
+      // choice 2: do not take
+      dp[rowIdx][colIdx] =
+        dp[rowIdx - 1][colIdx]; /* default case: do not take */
+
+      const maxAmountCanTake = ~~(colIdx / weight);
+
+      let amountTake = maxAmountCanTake;
+
+      while (amountTake > 0) {
+        const profitCandidate =
+          profit * amountTake + dp[rowIdx - 1][colIdx - weight * amountTake];
+
+        dp[rowIdx][colIdx] = Math.max(profitCandidate, dp[rowIdx][colIdx]);
+
+        amountTake--;
+      }
+    }
+  }
+
+  // return
+  return dp[rows - 1][cols - 1];
+}
+
+export { topDown, topDownMemoized, bottomUp };
