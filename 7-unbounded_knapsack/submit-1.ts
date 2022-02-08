@@ -116,4 +116,60 @@ function bottomUp(profits: number[], weights: number[], capacity: number) {
   return dp[rows - 1][cols - 1];
 }
 
-export { topDown, topDownMemoized, bottomUp };
+function findItems(profits: number[], weights: number[], capacity: number) {
+  const items: Record<number, number> = {};
+
+  // gen matrix
+  const rows = profits.length;
+  const cols = capacity + 1;
+  const dp = Array(rows)
+    .fill(0)
+    .map(() => Array(cols).fill(0));
+
+  // fill matrix
+  for (let i = 0; i < rows; i++) {
+    for (let j = 1; j < cols; j++) {
+      let profitIfSkip = 0;
+      let profitIfTake = 0;
+
+      if (i > 0) {
+        /* do not skip if i === 0 */
+        profitIfSkip = dp[i - 1][j];
+      }
+
+      if (j >= weights[i]) {
+        /* only take if there's enough capacity */
+        profitIfTake = profits[i] + dp[i][j - weights[i]];
+      }
+
+      dp[i][j] = Math.max(profitIfTake, profitIfSkip);
+    }
+  }
+
+  // traverse back to find items
+
+  let i = rows - 1;
+  let j = cols - 1;
+
+  while (i >= 0 && j > 0) {
+    // which direction do i go?
+
+    // 1. upward: skip current item
+    if (i > 0 && dp[i][j] === dp[i - 1][j]) {
+      // update i
+      i--;
+    }
+    // 2. leftward: take current item
+    else {
+      // update selected items
+      if (!(i in items)) items[i] = 0;
+      items[i]++;
+      // update left capacity
+      j -= weights[i];
+    }
+  }
+
+  return items;
+}
+
+export { topDown, topDownMemoized, bottomUp, findItems };

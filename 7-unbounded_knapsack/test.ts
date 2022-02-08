@@ -1,4 +1,4 @@
-import { bottomUp, topDown, topDownMemoized } from "./submit-1";
+import { bottomUp, topDown, topDownMemoized, findItems } from "./submit-1";
 
 describe("unbounded knapsack", () => {
   const weights = [1, 2, 3];
@@ -22,4 +22,14 @@ describe("unbounded knapsack", () => {
 
     expect(result).toBe(80);
   });
+});
+
+test("unbounded knapsack find items", () => {
+  const weights = [1, 3, 4, 5];
+  const profits = [15, 50, 60, 90];
+  const capacity = 8;
+
+  const result = findItems(profits, weights, capacity);
+
+  expect(result).toStrictEqual({ 1: 1, 3: 1 });
 });
