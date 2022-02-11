@@ -47,4 +47,59 @@ function naive(
   return bestStr.current.length;
 }
 
-export { naive };
+function topDownCacheMap(str: string) {
+  const cache: Record<string, number> = {};
+
+  function dfs(startIdx: number, endIdx: number): number {
+    const key = `${startIdx}|${endIdx}`;
+
+    if (cache[key]) return cache[key];
+
+    if (startIdx > endIdx) return 0;
+
+    if (startIdx === endIdx) return 1;
+
+    if (str[startIdx] === str[endIdx]) return 2 + dfs(startIdx + 1, endIdx - 1);
+
+    const skipEnd = dfs(startIdx, endIdx - 1);
+    const skipStart = dfs(startIdx + 1, endIdx);
+
+    const result = Math.max(skipEnd, skipStart);
+
+    cache[key] = result;
+
+    return result;
+  }
+
+  return dfs(0, str.length - 1);
+}
+
+function topDownCacheMatrix(str: string) {
+  const n = str.length;
+  const dp: number[][] = Array(n)
+    .fill(0)
+    .map(() => Array(n).fill(undefined));
+
+  function dfs(startIdx: number, endIdx: number): number {
+    if (dp[startIdx][endIdx] !== undefined) return dp[startIdx][endIdx];
+
+    if (startIdx > endIdx) return 0;
+
+    if (startIdx === endIdx) return 1;
+
+    if (str[startIdx] === str[endIdx]) return 2 + dfs(startIdx + 1, endIdx - 1);
+
+    const skipEnd = dfs(startIdx, endIdx - 1);
+    const skipStart = dfs(startIdx + 1, endIdx);
+
+    const result = Math.max(skipEnd, skipStart);
+
+    dp[startIdx][endIdx] = result;
+
+    return result;
+  }
+
+  return dfs(0, str.length - 1);
+}
+
+export { naive, topDownCacheMap, topDownCacheMatrix };
