@@ -35,4 +35,33 @@ function topDown(x: number, doCount = false): number {
   return final;
 }
 
-export { fibNaive, topDown };
+function bottomUp(x: number) {
+  const dp = Array(x + 1).fill(0);
+  dp[0] = 0;
+  dp[1] = 1;
+
+  for (let i = 2; i <= x; i++) {
+    dp[i] = dp[i - 1] + dp[i - 2];
+  }
+
+  return dp[x];
+}
+
+function betterBottomUp(x: number) {
+  if (x < 2) return x;
+
+  let prev2 = 0;
+  let prev1 = 1;
+  let cur = -1;
+
+  for (let i = 2; i <= x; i++) {
+    cur = prev1 + prev2;
+
+    prev2 = prev1;
+    prev1 = cur;
+  }
+
+  return cur;
+}
+
+export { fibNaive, topDown, bottomUp, betterBottomUp };
