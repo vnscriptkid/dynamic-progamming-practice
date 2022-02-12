@@ -102,4 +102,31 @@ function topDownCacheMatrix(str: string) {
   return dfs(0, str.length - 1);
 }
 
-export { naive, topDownCacheMap, topDownCacheMatrix };
+function bottomUp(str: string) {
+  const n = str.length;
+
+  const dp: number[][] = Array(n)
+    .fill(null)
+    .map(() => Array(n).fill(0));
+
+  for (let i = 0; i < n; i++) {
+    dp[i][i] = 1;
+  }
+
+  for (let startIdx = n - 2; startIdx >= 0; startIdx--) {
+    for (let endIdx = startIdx + 1; endIdx < n; endIdx++) {
+      if (str[startIdx] === str[endIdx]) {
+        dp[startIdx][endIdx] = 2 + dp[startIdx + 1][endIdx - 1];
+      } else {
+        dp[startIdx][endIdx] = Math.max(
+          dp[startIdx][endIdx - 1],
+          dp[startIdx + 1][endIdx]
+        );
+      }
+    }
+  }
+
+  return dp[0][n - 1];
+}
+
+export { naive, topDownCacheMap, topDownCacheMatrix, bottomUp };
