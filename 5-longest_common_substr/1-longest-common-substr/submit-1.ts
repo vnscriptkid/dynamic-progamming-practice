@@ -96,4 +96,26 @@ function topDownWithCache(str1: string, str2: string): number {
   return output;
 }
 
-export { naive1, topDown, topDownWithCache };
+function bottomUp(str1: string, str2: string): number {
+  const rows = str1.length + 1;
+  const cols = str2.length + 1;
+  const dp = Array(rows)
+    .fill(0)
+    .map(() => Array(cols).fill(0));
+  let globalMax = 0;
+
+  for (let i = 1; i < rows; i++) {
+    for (let j = 1; j < cols; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = 1 + dp[i - 1][j - 1];
+        globalMax = Math.max(globalMax, dp[i][j]);
+      } else {
+        dp[i][j] = 0;
+      }
+    }
+  }
+
+  return globalMax;
+}
+
+export { naive1, topDown, topDownWithCache, bottomUp };

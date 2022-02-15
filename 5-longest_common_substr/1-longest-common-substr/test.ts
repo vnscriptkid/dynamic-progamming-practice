@@ -1,4 +1,4 @@
-import { naive1, topDown, topDownWithCache } from "./submit-1";
+import { bottomUp, naive1, topDown, topDownWithCache } from "./submit-1";
 
 test("naive1", () => {
   expect(naive1("abdca", "cbda")).toBe(2);
@@ -13,4 +13,9 @@ test("topDown", () => {
 test("topDownWithCache", () => {
   expect(topDownWithCache("abdca", "cbda")).toBe(2);
   expect(topDownWithCache("passport", "ppsspt")).toBe(3);
+});
+
+test("bottomUp", () => {
+  expect(bottomUp("abdca", "cbda")).toBe(2);
+  expect(bottomUp("passport", "ppsspt")).toBe(3);
 });
