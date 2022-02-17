@@ -119,4 +119,54 @@ function bottomUp(
   return dp[rows - 1][cols - 1];
 }
 
-export { naive, topDownCache, bottomUp };
+function findItems(
+  profits: number[],
+  weights: number[],
+  capacity: number
+): number[] {
+  // build matrix
+  const n = profits.length;
+  const dp = Array(n)
+    .fill(null)
+    .map(() => Array(capacity + 1).fill(0));
+
+  // init first row
+  for (let c = 1; c <= capacity; c++) {
+    if (c >= weights[0]) dp[0][c] = profits[0];
+  }
+
+  for (let i = 1; i < n; i++) {
+    for (let c = 1; c <= capacity; c++) {
+      const p1 = dp[i - 1][c];
+
+      let p2 = 0;
+      if (c >= weights[i]) {
+        p2 = profits[i] + dp[i - 1][c - weights[i]];
+      }
+      dp[i][c] = Math.max(p1, p2);
+    }
+  }
+
+  let curCapacity = capacity;
+  let curItem = n - 1;
+  const items: number[] = [];
+
+  while (curCapacity > 0 && curItem >= 0) {
+    const curProfit = dp[curItem][curCapacity];
+
+    const profitWithoutThisItem = dp[curItem - 1][curCapacity];
+
+    if (curProfit === profitWithoutThisItem) {
+      // do not select
+      curItem--;
+    } else {
+      items.push(curItem);
+      curCapacity -= weights[curItem];
+      curItem--;
+    }
+  }
+
+  return items.sort();
+}
+
+export { naive, topDownCache, bottomUp, findItems };
