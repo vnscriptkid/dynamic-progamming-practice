@@ -169,4 +169,79 @@ function findItems(
   return items.sort();
 }
 
-export { naive, topDownCache, bottomUp, findItems };
+function bottomUpBetter(
+  profits: number[],
+  weights: number[],
+  capacity: number
+): number[] {
+  // build matrix
+  const n = profits.length;
+  const dp = Array(2)
+    .fill(null)
+    .map(() => Array(capacity + 1).fill(0));
+
+  // init first row
+  for (let c = 1; c <= capacity; c++) {
+    if (c >= weights[0]) dp[0][c] = profits[0];
+  }
+
+  // i === 0 : dp[0]
+  // i === 1 : dp[1]
+  // i === 2 : dp[0]
+  // ...
+  // i === x : dp[x % 2]
+
+  let curRow;
+
+  for (let i = 1; i < n; i++) {
+    // i: 1 -> n - 1
+    const prevRow = dp[Math.abs(i - 1) % 2];
+    curRow = dp[i % 2];
+
+    for (let c = 1; c <= capacity; c++) {
+      const p1 = prevRow[c];
+
+      let p2 = 0;
+      if (c >= weights[i]) {
+        p2 = profits[i] + prevRow[c - weights[i]];
+      }
+      curRow[c] = Math.max(p1, p2);
+    }
+  }
+
+  return curRow?.[capacity];
+}
+
+function bottomUpBest(profits: number[], weights: number[], capacity: number) {
+  const n = profits.length;
+  const dp = Array(capacity + 1).fill(0);
+
+  // init first row
+  for (let c = 1; c <= capacity; c++) {
+    if (c >= weights[0]) dp[c] = profits[0];
+  }
+
+  for (let i = 1; i < n; i++) {
+    for (let c = capacity; c >= 1; c--) {
+      const p1 = dp[c];
+
+      let p2 = 0;
+      if (c >= weights[i]) {
+        p2 = profits[i] + dp[c - weights[i]];
+      }
+
+      dp[c] = Math.max(p1, p2);
+    }
+  }
+
+  return dp[capacity];
+}
+
+export {
+  naive,
+  topDownCache,
+  bottomUp,
+  findItems,
+  bottomUpBest,
+  bottomUpBetter,
+};

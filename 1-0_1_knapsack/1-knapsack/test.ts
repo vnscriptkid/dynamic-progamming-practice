@@ -1,4 +1,11 @@
-import { bottomUp, findItems, naive, topDownCache } from "./submit-1";
+import {
+  bottomUp,
+  bottomUpBest,
+  bottomUpBetter,
+  findItems,
+  naive,
+  topDownCache,
+} from "./submit-1";
 
 // Items: { Apple, Orange, Banana, Melon }
 // Weights: { 2, 3, 1, 4 }
@@ -26,5 +33,13 @@ describe("knapsack", () => {
     const profits = [1, 6, 10, 16];
     const capacity = 7;
     expect(findItems(profits, weights, capacity)).toEqual([1, 3]);
+  });
+
+  test("bottomUpBetter", () => {
+    expect(bottomUpBetter(profits, weights, capacity)).toEqual(10);
+  });
+
+  test("bottomUpBest", () => {
+    expect(bottomUpBest(profits, weights, capacity)).toEqual(10);
   });
 });
