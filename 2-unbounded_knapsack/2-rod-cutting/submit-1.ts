@@ -65,4 +65,32 @@ function topDownCache(
   return cache[cacheKey];
 }
 
-export { naive, topDownCache };
+function bottomUp(lengths: number[], prices: number[], total: number): number {
+  const n = prices.length;
+  const dp: number[][] = Array(total + 1)
+    .fill(0)
+    .map(() => Array(n).fill(0));
+
+  // init first row
+  for (let l = 1; l <= total; l++) {
+    if (l >= lengths[0]) {
+      dp[0][l] = prices[0] + dp[0][l - lengths[0]];
+    }
+  }
+
+  for (let i = 1; i < n; i++) {
+    for (let l = 1; l <= total; l++) {
+      let p1 = 0;
+
+      if (l >= lengths[i]) p1 = prices[i] + dp[i][l - lengths[i]];
+
+      const p2 = dp[i - 1][l];
+
+      dp[i][l] = Math.max(p1, p2);
+    }
+  }
+
+  return dp[n - 1][total];
+}
+
+export { naive, topDownCache, bottomUp };
