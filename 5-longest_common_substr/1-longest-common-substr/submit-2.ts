@@ -95,4 +95,31 @@ function bottomUp(str1: string, str2: string): number {
   return max;
 }
 
-export { naive1, topDown, topDownWithCache, bottomUp };
+function bottomUpBetter(str1: string, str2: string): number {
+  const dp: number[][] = Array(2)
+    .fill(null)
+    .map(() => Array(str2.length).fill(0));
+  let max = 0;
+
+  // i === 0 => dp[0]
+  // i === 1 => dp[1]
+  // i === 2 => dp[0]
+
+  for (let i = 0; i < str1.length; i++) {
+    const curRow = dp[i % 2];
+    const prevRow = dp[(i + 1) % 2];
+
+    for (let j = 0; j < str2.length; j++) {
+      curRow[j] = 0; // reset value
+      if (str1[i] === str2[j]) {
+        curRow[j] = 1;
+        if (j - 1 >= 0) curRow[j] += prevRow[j - 1];
+        max = Math.max(max, curRow[j]);
+      }
+    }
+  }
+
+  return max;
+}
+
+export { naive1, topDown, topDownWithCache, bottomUp, bottomUpBetter };
