@@ -93,4 +93,51 @@ function bottomUp(lengths: number[], prices: number[], total: number): number {
   return dp[n - 1][total];
 }
 
-export { naive, topDownCache, bottomUp };
+function findItems(lengths: number[], prices: number[], total: number): any {
+  const n = prices.length;
+  const dp: number[][] = Array(n)
+    .fill(null)
+    .map(() => Array(total + 1).fill(0));
+  const items: Record<string, number> = {};
+
+  // init first row
+  for (let l = 1; l <= total; l++) {
+    if (l >= lengths[0]) dp[0][l] = prices[0] + dp[0][l - lengths[0]];
+  }
+
+  // build dp
+  for (let i = 1; i < n; i++) {
+    for (let l = 1; l <= total; l++) {
+      const p1 = dp[i - 1][l];
+
+      let p2 = 0;
+
+      if (l >= lengths[i]) {
+        p2 = prices[i] + dp[i][l - lengths[i]];
+      }
+
+      dp[i][l] = Math.max(p1, p2);
+    }
+  }
+
+  let i = n - 1;
+  let l = total;
+
+  while (l > 0) {
+    if (i - 1 >= 0 && dp[i][l] === dp[i - 1][l]) {
+      // do not take cur item
+      i--;
+    } else {
+      // take cur item
+      if (!(i in items)) items[i] = 0;
+      items[i]++;
+
+      // update curLength
+      l -= lengths[i];
+    }
+  }
+
+  return items;
+}
+
+export { naive, topDownCache, bottomUp, findItems };
