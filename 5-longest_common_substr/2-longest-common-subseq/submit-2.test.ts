@@ -1,4 +1,4 @@
-import { bottomUp, naive, topDownCache } from "./submit-1";
+import { naive, topDownCache, bottomUp } from "./submit-2";
 
 test("naive", () => {
   expect(naive("abdca", "cbda")).toEqual(3);
